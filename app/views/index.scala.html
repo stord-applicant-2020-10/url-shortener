@@ -1,0 +1,31 @@
+@(redirectCreationForm: Form[CreateRedirectForm])(implicit request: MessagesRequestHeader, assetsFinder: AssetsFinder)
+
+@import helper._
+
+@main("STORD URL Shortener") {
+	<h1>Welcome to a quick and dirty URL Shortener.</h1>
+	<p></p>
+	<div class="align-items-center p-3">
+	@b4.vertical.form(routes.RedirectController.createRedirect()) { implicit vfc =>
+	  @b4.text(redirectCreationForm("url"), Symbol("_label") -> "Enter a URL to shorten", Symbol("placeholder") -> "https://www.google.com" )
+      @CSRF.formField
+	  @b4.submit(Symbol("class") -> "btn btn-primary", Symbol("name") -> "submit"){ Shorten! }
+	}
+
+	@if(request.flash.data.contains("success")) {
+		@request.flash.get("success").map { key =>
+			@request.flash.get("result").map { uri =>
+				<div class="alert alert-success" role="alert">
+					@request.messages(key): <a href="@uri">@uri</a>
+				</div>
+			}
+		}
+	} else {
+		@request.flash.get("failure").map { key =>
+			<div class="alert alert-danger" role="alert">
+				@request.messages(key)
+			</div>
+		}
+	}
+	</div>
+}

@@ -1,0 +1,5 @@
+redirect.created = You have successfully created a redirect
+redirect.failed = The provided URL was invalid
+
+constraint.url = Enter a valid HTTP or HTTPS public URL.
+error.url = That can't be a URL.

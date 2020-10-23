@@ -1,0 +1,49 @@
+Approach
+--------
+To isolate the build dependencies, I encapsulated the server in a Docker
+container. If docker is setup on the host machine, then everything should
+work out of the box with just the Make commands.
+
+All told, I had about 3 hours to spend on this so I made some compromises.
+
+How To Run
+----------
+```
+make setup
+make server
+```
+Open browser to "http://localhost:9000"
+
+Design
+------
+I'm not a strong front-end developer these days because I've been doing
+solely backend work for several years. To accommodate for that, I picked
+a full-stack framework: Play! It's a good choice for quick and dirty
+web apps (like Django or Rails) since it has basic concerns like CSRF
+protection built into it and has a complete tech stack for building stateless
+apps. The path of least resistance is to use Slick for the data store access
+which is a JDBC option that supports numerous database technologies. Given
+that the records are really just key/value pairs, Redis would be a better
+choice for the requirements as written but pulling that in would have
+complicated the test harness more than I had time to handle.
+
+The storage system used is still H2. I ran out of time before switching it
+over to Postgresql to allow for something more durable. It's a straight
+forward switch in Slick but I needed to let my wife go to bed and someone had
+to look after the dogs for the night as one of them just had surgery.
+
+I ruled out switching H2 into file mode instead of memory mode because that's
+just a cop out on not getting it switched over to a real DB.
+
+Play has a full suite of test capabilities under it from proper mock-driven
+Unit tests all the way up to Selenium-based functional tests. I've used some
+of everything here.
+
+Play is also built on top of Akka Http so handling a realistic amount of load
+is a matter of tuning the deployment in real life instead of the in-place
+launch that I used here.
+
+Additionally, in a real deployment, the configuration would extract the secret
+value from the ENV vars instead of relying on the application.conf as this does.
+Variable interpolation from the ENV as per 12-Factor guidelines is the norm for
+a server environment.
